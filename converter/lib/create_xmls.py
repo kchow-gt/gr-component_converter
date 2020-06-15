@@ -52,7 +52,8 @@ def formatSCD(rp, ports):
 
     for si in supports_list:
         all_interfaces.add_interface(scd.interface(repid=si.id, name=si.name, inheritsinterface=si.inherits))
-        sup_interfaces.add_supportsinterface(scd.supportsInterface(repid=si.id, supportsname=si.name))
+        # 2020-June-15 - Deactivate redundant support list
+        #sup_interfaces.add_supportsinterface(scd.supportsInterface(repid=si.id, supportsname=si.name))
 
     for interface in all_interfaces.get_interface():
         if "Resource" in interface.name:
@@ -116,7 +117,7 @@ def formatPRF(rp, props, docker_image, docker_volumes):
     for i in range(0, len(props)):
         new_id = "gr::" + props[i].name
         new_name = "gr_" + props[i].name
-        rp.addSimpleProperty(id=new_id, value=props[i].value, complex=False, type=props[i].type, kindtypes=["property"])
+        rp.addSimpleProperty(id=new_id, value=str(props[i].value), complex=False, type=props[i].type, kindtypes=["property"])
         rp.prf.simple[i].set_name(new_name)
 
     def docker_execparam(name, value, description):

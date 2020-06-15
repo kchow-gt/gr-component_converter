@@ -37,10 +37,23 @@ class GNUBlock(object):
             param_key = param.find('key').text.lower()
             param_value = param.find('value').text
             
-            if param_key == "_enabled" and "true" != param_value.lower():
-                # Skip disabled blocks
-                # EARLY RETURN
-                return None
+            """
+            2020-06-15
+                Swap to support numeric booleans
+                Tested with GNU Radio 3.7.14
+            """
+            #if param_key == "_enabled" and "true" != param_value.lower():
+            #    # Skip disabled blocks
+            #    # EARLY RETURN
+            #    return None
+            if param_key == "_enabled":
+                if param_value.lower() == "true":
+                    continue # enabled with true
+                elif param_value.lower() in ["false", "none"]:
+                    return None # disabled with false or None
+                elif not bool(int(param_value)):
+                    return None # disabled component, return None
+
             # Map other known keys to fields or treat any unknowns as possible
             # references to variable IDs (if the key starts with an alpha char)
             elif param_key == "id":
